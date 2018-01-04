@@ -35,7 +35,7 @@ function preload(){
 function create(){
 	//Initialize ball_launched and ball_velocity variables
 	ball_launched = false;
-	ball_velocity = 700;
+	ball_velocity = 400;
 	player_score = 0;
 	ai_score = 0;
 	ai_speed = 250;
