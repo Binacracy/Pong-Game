@@ -13,6 +13,7 @@ var ball;
 var ball_launched; 
 var ball_velocity; //Speed at which ball is traveling
 var xball_velocity;
+var ai_speed;
 
 var player_score_text;
 var ai_score_text;
@@ -20,9 +21,6 @@ var ai_score_text;
 var player_score;
 var ai_score;
 
-var hitCount;
-
-var spaceKey;
 
 function preload(){
 	game.load.image('paddle', 'assets/images/paddle.png');
@@ -37,11 +35,10 @@ function preload(){
 function create(){
 	//Initialize ball_launched and ball_velocity variables
 	ball_launched = false;
-	ball_velocity = 400;
+	ball_velocity = 700;
 	player_score = 0;
 	ai_score = 0;
-	hitCount = 9;
-	xball_velocity = ball_velocity * 0.05;
+	ai_speed = 250;
 
 	//Add background image
 	var bg = game.add.sprite(0,0,'background');
@@ -58,7 +55,8 @@ function create(){
 	game.input.onDown.add(launch_ball, this);
 
 	//Pause game
-	spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	//spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	
 	//Create score texts using Text Objects
 	/*player_score = game.add.text(128, 128, '0',{
 		font: "64px Gabriella",
@@ -86,8 +84,7 @@ function update(){
 
 	//Checks to see if the paddles and ball objects are colliding
 	if (game.physics.arcade.collide(player, ball) | game.physics.arcade.collide(ai, ball)){
-		/*hitCount++;
-		console.log(hitCount);*/
+		increase_ball_velocity();
 	} 
 	
 
@@ -101,17 +98,13 @@ function update(){
 	//Set AI paddle to move where the ball is moving
 	ai.body.velocity.setTo(0,ball.body.velocity.y);
 
-	ai.body.maxVelocity.y = 250;
-
-	if(hitCount >= 3){
-		console.log("INNNNNNNNNNN");
-		increase_ball_velocity();
-		hitCount = 0;
+	if (ball.body.velocity.y >= 500 | ball.body.velocity.y <= -500){
+		ai.body.maxVelocity = ai_speed + 200;
+	} else{
+		ai.body.maxVelocity.y = ai_speed;
 	}
+	
 
-	if(spaceKey.isDown){
-		pauseGame();
-	}
 }
 
 function createPaddle(x, y){
@@ -172,11 +165,18 @@ function launch_ball(){
 }
 
 function increase_ball_velocity(){
-	xball_velocity += xball_velocity;
-	ball.body.velocity.x = ball_velocity + xball_velocity;
-	ball.body.velocity.y = ball_velocity + xball_velocity;
-	console.log(ball.body.velocity.x)
-	console.log(ball.body.velocity.y)
+	if (ball.body.velocity.x < 0 ){
+			ball.body.velocity.x -= 5;
+		} else{
+			ball.body.velocity.x += 5;
+		}
+
+	if (ball.body.velocity.y < 0 ){
+			ball.body.velocity.y -= 5;
+		} else{
+			ball.body.velocity.y += 5;
+		}
+	
 }
 
 function pauseGame(){
